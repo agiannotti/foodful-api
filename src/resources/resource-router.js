@@ -35,7 +35,7 @@ ResourceRouter.route('/api/resources')
       }
     );
   })
-  .get('/api/resources', (req, res, next) => {
+  .get((req, res, next) => {
     ResourceService.getAllResources(req.app.get('db'))
       .then((resources) => {
         res.json(resources);
