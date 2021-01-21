@@ -1,42 +1,64 @@
 const express = require('express');
-const xss = require('xss');
-const logger = require('../logger');
+// const xss = require('xss');
+// const { resource } = require('../app');
+// const logger = require('../logger');
 const ResourceRouter = express.Router();
 const ResourceService = require('./resource-service');
 const bodyParser = express.json();
 // const { v4: uuid } = require('uuid');
 
-const serializeResource = (resource) => ({
-  id: resource.id,
-  title: xss(resource.title),
-  content: xss(resource.content),
-  zipcode: resource.zipcode,
-  date_published: resource.date_published,
-});
-
+// const serializeResource = (resource) => ({
+//   id: resource.id,
+//   title: xss(resource.title),
+//   content: xss(resource.content),
+//   zipcode: resource.zipcode,
+//   date_published: resource.date_published,
+// });
 ResourceRouter.route('/api/resources')
-  .get((req, res, next) => {
-    const knexInstance = req.app.get('db');
-    ResourceService.getAllResources(knexInstance)
-      .then((foodfuldb) => {
-        res.json(foodfuldb.map(serializeResource));
+  .post(bodyParser, (req, res, next) => {
+    const { title, zipcode, content, date_published } = req.body;
+    const newResource = {
+      title,
+      zipcode,
+      content,
+      date_published,
+    };
+    for (const field of ['title', 'zipcode', 'content', 'date_published'])
+      if (!req.body[field])
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`,
+        });
+
+    ResourceService.insertResource(req.app.get('db'), newResource).then(
+      (resource) => {
+        res.status(201).json(resource);
+      }
+    );
+  })
+  .get('/api/resources', (req, res, next) => {
+    ResourceService.getAllResources(req.app.get('db'))
+      .then((resources) => {
+        res.json(resources);
       })
       .catch(next);
-  })
-  .post(bodyParser, (req, res) => {
-    const { id, title, content, zipcode, date_published } = req.body;
-    if (!title) {
-      logger.error('Title is required');
-      return res.status(400).send('Please include a title');
-    }
-    if (!content) {
-      logger.error('A description is required');
-      return res.status(400).send('Please include a description');
-    }
-    if (!zipcode) {
-      logger.error('Zipcode is required');
-      return res.status(400).send('Please include a zipcode');
-    }
   });
+
+// async function checkResourceExists(req, res, next) {
+//   try {
+//     const thing = await ResourceService.getById(
+//       req.app.get('db'),
+//       req.params.id
+//     )
+
+//     if (!thing)
+//       return res.status(404).json({
+//         error: `Resource doesn't exist`
+//       })
+
+//     res.thing = thing
+//     next()
+//   } catch (error) {
+//     next(error)
+//   }
 
 module.exports = ResourceRouter;

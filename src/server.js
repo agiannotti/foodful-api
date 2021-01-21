@@ -1,12 +1,19 @@
 /* eslint-disable no-console */
 const app = require('./app');
 const knex = require('knex');
-const { PORT, DB_URL } = require('./config');
+const { PORT, DATABASE_URL } = require('./config');
+
+// console.log('CONNECTION', DATABASE_URL);
 
 const db = knex({
   client: 'pg',
-  connnection: DB_URL,
+  connection: DATABASE_URL,
 });
+
+// db.select('*')
+//   .from('resource_identity')
+//   .then((data) => console.log(data))
+//   .catch((err) => console.log(err));
 
 app.set('db', db);
 

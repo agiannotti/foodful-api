@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { API_TOKEN } = require('./config');
 
 function validateBearerToken(req, res, next) {

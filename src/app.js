@@ -11,17 +11,12 @@ const errorHandler = require('./error-handler');
 // const logger = require('/logger');
 
 const app = express();
-
-app.use(validateBearerToken);
 app.use(cors());
-app.use(morgan(morganOption));
 app.use(helmet());
-app.use(errorHandler);
+app.use(validateBearerToken);
+app.use(morgan(morganOption));
 
 app.use(ResourceRouter);
-
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
+app.use(errorHandler);
 
 module.exports = app;
