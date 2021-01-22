@@ -5,6 +5,7 @@ const xss = require('xss');
 const ResourceRouter = express.Router();
 const ResourceService = require('./resource-service');
 const { v4: uuid } = require('uuid');
+const { updateResource } = require('./resource-service');
 
 const bodyParser = express.json();
 
@@ -17,6 +18,12 @@ const serializeResource = (resource) => ({
 });
 
 ResourceRouter.route('/api/resources')
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    ResourceService.getAllResources(knexInstance).then((resourcedb) => {
+      res.json(resourcedb.map(serializeResource));
+    });
+  })
   .post(bodyParser, (req, res, next) => {
     const { title, zipcode, content, date_published } = req.body;
     const newResource = {
@@ -36,31 +43,64 @@ ResourceRouter.route('/api/resources')
         res.status(201).json(resource);
       }
     );
+  });
+
+ResourceRouter.route('/api/resources/:id')
+  .all((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    ResourceService.getById(knexInstance, req.params.id)
+      .then((resource) => {
+        if (!resource) {
+          return res.status(404).json({
+            error: { message: 'resource not found' },
+          });
+        }
+        res.resource = resource;
+        next();
+      })
+      .catch(next);
   })
   .get((req, res, next) => {
-    ResourceService.getAllResources(req.app.get('db'))
-      .then((resources) => {
-        res.json(resources);
+    res.json({
+      id: res.resource.id,
+      title: xss(res.resource.title),
+      content: xss(res.resource.content),
+      zipcode: res.resource.zipcode,
+      date_published: res.resource.date_published,
+    });
+  })
+  .delete((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    const id = req.params.id;
+    ResourceService.deleteResource(knexInstance, id)
+      .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch(bodyParser, (req, res, next) => {
+    const { title, zipcode, content, date_published } = req.body;
+    const resourceToUpdate = {
+      title,
+      zipcode,
+      content,
+      date_published,
+    };
+    const valueCheck = Object.values(resourceToUpdate).filter(Boolean).length;
+    if (valueCheck === 0) {
+      return res.status(400).json({
+        error: { message: `req body must contain all required values` },
+      });
+    }
+    ResourceService.updateResource(
+      req.app.get('db'),
+      req.params.id,
+      resourceToUpdate
+    )
+      .then(() => {
+        res.status(204).end();
       })
       .catch(next);
   });
-
-// async function checkResourceExists(req, res, next) {
-//   try {
-//     const thing = await ResourceService.getById(
-//       req.app.get('db'),
-//       req.params.id
-//     )
-
-//     if (!thing)
-//       return res.status(404).json({
-//         error: `Resource doesn't exist`
-//       })
-
-//     res.thing = thing
-//     next()
-//   } catch (error) {
-//     next(error)
-//   }
 
 module.exports = ResourceRouter;
