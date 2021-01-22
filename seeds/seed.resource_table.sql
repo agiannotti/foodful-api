@@ -1,7 +1,11 @@
 TRUNCATE resource_table;
-INSERT INTO resource_table (title, zipcode, content)
+INSERT INTO resource_table (title, content, zipcode)
 VALUES 
-  ('first', '60314', 'information about provided resource'),
-  ('second', '61614', 'data about provided resource'),
-  ('third', '60634', 'science about provided resource'),
-  ('fourth', '60644', 'size of provided resource');
+  ('selvage sriracha', 'level snackwave, +1 fanny pack','60314'),
+  ('brooklyn health goth', 'farm-to-table','61414'),
+  ('street art live-edge', 'brooklyn chillwave scenester','63414'),
+  ('williamsburg small batch freegan', 'Mlkshk single-origin coffee','62344'),
+  ('Pinterest cornhole', 'Godard pok pok','62314'),
+  ('Marfa godard', 'banjo selvage sriracha','60544'),
+  ('Woke hot chicken messenger', 'lumbersexual try-hard semiotics','65224'),
+  ('Man braid aesthetic butcher', 'Forage tote bag XOXO','62344');
