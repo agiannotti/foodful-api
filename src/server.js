@@ -11,7 +11,7 @@ const db = knex({
 });
 
 // db.select('*')
-//   .from('resource_identity')
+//   .from('resource_table')
 //   .then((data) => console.log(data))
 //   .catch((err) => console.log(err));
 

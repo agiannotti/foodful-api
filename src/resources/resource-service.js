@@ -1,16 +1,16 @@
 const ResourceService = {
   getAllResources(db) {
-    return db.select('*').from('resource_identity');
+    return db.select('*').from('resource_table');
   },
 
   getById(knex, id) {
-    return knex.from('resource_identity').select('*').where('id', id).first();
+    return knex.from('resource_table').select('*').where('id', id).first();
   },
 
   insertResource(knex, newResource) {
     return knex
       .insert(newResource)
-      .into('resource_identity')
+      .into('resource_table')
       .returning('*')
       .then((rows) => {
         return rows[0];
@@ -18,11 +18,11 @@ const ResourceService = {
   },
 
   deleteResource(knex, id) {
-    return knex('resource_identity').where({ id }).delete();
+    return knex('resource_table').where({ id }).delete();
   },
 
   updateResource(knex, id, newResourceFields) {
-    return knex('resource_identity').where({ id }).update(newResourceFields);
+    return knex('resource_table').where({ id }).update(newResourceFields);
   },
 };
 

@@ -1,19 +1,21 @@
 const express = require('express');
-// const xss = require('xss');
+const xss = require('xss');
 // const { resource } = require('../app');
 // const logger = require('../logger');
 const ResourceRouter = express.Router();
 const ResourceService = require('./resource-service');
-const bodyParser = express.json();
-// const { v4: uuid } = require('uuid');
+const { v4: uuid } = require('uuid');
 
-// const serializeResource = (resource) => ({
-//   id: resource.id,
-//   title: xss(resource.title),
-//   content: xss(resource.content),
-//   zipcode: resource.zipcode,
-//   date_published: resource.date_published,
-// });
+const bodyParser = express.json();
+
+const serializeResource = (resource) => ({
+  id: resource.id,
+  title: xss(resource.title),
+  content: xss(resource.content),
+  zipcode: resource.zipcode,
+  date_published: resource.date_published,
+});
+
 ResourceRouter.route('/api/resources')
   .post(bodyParser, (req, res, next) => {
     const { title, zipcode, content, date_published } = req.body;

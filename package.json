@@ -9,7 +9,7 @@
     "dev": "nodemon src/server.js",
     "predeploy": "npm audit",
     "deploy": "git push heroku master",
-    "migrate": "postgrator --config postgrator-config"
+    "migrate": "postgrator --config ./postgrator-config.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "logger": "0.0.1",
     "morgan": "^1.10.0",
     "pg": "^8.5.1",
+    "postgrator-cli": "^4.0.0",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
     "winston": "^3.3.3",

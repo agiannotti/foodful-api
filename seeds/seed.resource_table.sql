@@ -1,5 +1,5 @@
-TRUNCATE resource_identity;
-INSERT INTO resource_identity (title, zipcode, content)
+TRUNCATE resource_table;
+INSERT INTO resource_table (title, zipcode, content)
 VALUES 
   ('first', '60314', 'information about provided resource'),
   ('second', '61614', 'data about provided resource'),
