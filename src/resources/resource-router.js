@@ -1,6 +1,5 @@
 const express = require('express');
 const xss = require('xss');
-// const { resource } = require('../app');
 // const logger = require('../logger');
 const ResourceRouter = express.Router();
 const ResourceService = require('./resource-service');
@@ -25,14 +24,13 @@ ResourceRouter.route('/api/resources')
     });
   })
   .post(bodyParser, (req, res, next) => {
-    const { title, zipcode, content, date_published } = req.body;
+    const { title, zipcode, content } = req.body;
     const newResource = {
       title,
       zipcode,
       content,
-      date_published,
     };
-    for (const field of ['title', 'zipcode', 'content', 'date_published'])
+    for (const field of ['title', 'zipcode', 'content'])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
