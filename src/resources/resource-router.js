@@ -1,10 +1,7 @@
 const express = require('express');
 const xss = require('xss');
-// const logger = require('../logger');
 const ResourceRouter = express.Router();
 const ResourceService = require('./resource-service');
-const { v4: uuid } = require('uuid');
-const { updateResource } = require('./resource-service');
 
 const bodyParser = express.json();
 
