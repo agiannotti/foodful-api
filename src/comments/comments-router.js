@@ -1,5 +1,5 @@
 const express = require('express');
-const xss = require('express');
+// const xss = require('express');
 const CommentsService = require('./comments-service');
 const CommentsRouter = express.Router();
 const bodyParser = express.json();
@@ -21,8 +21,9 @@ CommentsRouter.route('/api/comments')
     });
   })
   .post(bodyParser, (req, res, next) => {
+    const knexInstance = req.app.get('db');
     const { content, date_created, resource_id } = req.body;
-    const newcomment = {
+    const newComment = {
       content,
       date_created,
       resource_id,
@@ -32,8 +33,13 @@ CommentsRouter.route('/api/comments')
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
         });
+    newComment.resource_id = Number(resource_id);
 
-    CommentsService.insertComment(req.app.get('db'), newcomment)
+    if (resource_id) {
+      newComment.date_created = date_created;
+    }
+
+    CommentsService.insertComment(knexInstance, newComment)
       .then((comment) => {
         res.status(201).json(comment);
       })
@@ -82,7 +88,7 @@ CommentsRouter.route('/api/comments/:id')
     const valueCheck = Object.values(commentToUpdate).filter(Boolean).length;
     if (valueCheck === 0) {
       return res.status(400).json({
-        error: { message: `req body must contain all required values` },
+        error: { message: 'Must include content!' },
       });
     }
     CommentsService.updateComments(
