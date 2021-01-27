@@ -33,6 +33,7 @@ CommentsRouter.route('/api/comments')
         return res.status(400).json({
           error: `Missing '${field}' in request body`,
         });
+
     newComment.resource_id = Number(resource_id);
 
     if (resource_id) {
