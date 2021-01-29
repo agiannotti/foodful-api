@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(validateBearerToken);
 app.use(morgan(morganOption));
 
-app.use(CommentsRouter);
-app.use(ResourceRouter);
+app.use('/api/comments', CommentsRouter);
+app.use('/api/resources', ResourceRouter);
 
 app.use(errorHandler);
 

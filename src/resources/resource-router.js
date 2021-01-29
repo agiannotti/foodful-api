@@ -13,7 +13,7 @@ const serializeResource = (resource) => ({
   date_published: resource.date_published,
 });
 
-ResourceRouter.route('/api/resources')
+ResourceRouter.route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     ResourceService.getAllResources(knexInstance).then((resourcedb) => {
@@ -40,7 +40,7 @@ ResourceRouter.route('/api/resources')
     );
   });
 
-ResourceRouter.route('/api/resources/:id')
+ResourceRouter.route('/:id')
   .all((req, res, next) => {
     const knexInstance = req.app.get('db');
     ResourceService.getById(knexInstance, req.params.id)

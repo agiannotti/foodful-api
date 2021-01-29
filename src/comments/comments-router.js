@@ -13,7 +13,7 @@ const serializeComment = (comment) => ({
   resource_id: comment.resource_id,
 });
 
-CommentsRouter.route('/api/comments')
+CommentsRouter.route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     CommentsService.getAllComments(knexInstance).then((commentdb) => {
@@ -47,7 +47,7 @@ CommentsRouter.route('/api/comments')
       .catch(next);
   });
 
-CommentsRouter.route('/api/comments/:id')
+CommentsRouter.route('/:id')
   .all((req, res, next) => {
     const knexInstance = req.app.get('db');
     CommentsService.getById(knexInstance, req.params.id)
